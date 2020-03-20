@@ -2,18 +2,17 @@ const dbUtils = require("../fund_utils/db")
 const axios = require("axios")
 const common = require('../fund_utils/common')
 const DOMParser = require('xmldom').DOMParser
+const consts = require('../fund_utils/const')
 
-const DATETIME = 'datetime'
-const NET_VALUE_UNIT = 'net_value_unit'
-const NET_VALUE_ACC = 'net_value_acc'
-const DAILY_GROWTH_RATE = 'daily_growth_rate'
-const BUYABLE = 'buyable'
-const SALEABLE = 'saleable'
-const FUND_CODE = 'fund_code'
-const BAR_CLC = 'bars'
-const SYMBOLS_CLC = 'symbols'
-const MGO_DB = 'fund'
 const extractCellValue = common.extractCellValue
+const SYMBOL_EN = consts.SYMBOL_EN
+const FUND_CODE = consts.FUND_CODE
+const DATETIME = consts.DATETIME
+const NET_VALUE_UNIT = consts.NET_VALUE_UNIT
+const NET_VALUE_ACC = consts.NET_VALUE_ACC
+const DAILY_GROWTH_RATE = consts.DAILY_GROWTH_RATE
+const BUYABLE = consts.BUYABLE
+const SALEABLE = consts.SALEABLE
 
 
 function table2List(html, fundCode){
@@ -112,8 +111,4 @@ async function fetchAllHistoricalBar(){
     })
 }
 
-// fetchBar('110022', page=1, dt1=null, dt2=null, size=1)
-// for (var i of  ['000985', '000297', '001178', '001562', '001718', '166002', '460005', '519069', '159905']){
-//     await fetchHistoricalBar('000985')
-// }
-fetchHistoricalBar('519688')
+fetchHistoricalBar('159909')

@@ -1,34 +1,25 @@
-const rp = require('request-promise')
-const fs = require('fs')
-const mongo = require('mongodb')
 const axios = require('axios')
 const DOMParser = require('xmldom').DOMParser
 const extractCellValue = require('../fund_utils/common').extractCellValue
 const dbUtils = require('../fund_utils/db')
-const db_client = mongo.MongoClient
+const consts = require("../fund_utils/const")
 
-var mgo_adr = "mongodb://localhost:27017/";
+const MGO_DB = consts.MGO_DB
+const SYMBOL_CLC = consts.SYMBOLS_CLC
+const SYMBOL_EN = consts.SYMBOL_EN
+const SYMBOL_ZH = consts.SYMBOL_ZH
+const TYPE = consts.TYPE
+const COMPONENT_CODE = consts.COMPONENT_CODE
+const COMPONENT_NAME = consts.COMPONENT_NAME
+const WEIGHT = consts.WEIGHT// weight on the net value
+const MARKET_CAP = consts.MARKET_CAP
+const SHARES = consts.SHARES
+const VALID_UNTIL = consts.VALID_UNTIL
+const COMPONENT_TYPE = consts.COMPONENT_TYPE
+const FUND_CODE = CONST_VAR.FUND_CODE
 
-const url = 'http://fund.eastmoney.com/js/fundcode_search.js';
-const COMPONENT_CLC = 'components'
-const MGO_DB = 'fund'
-
-const COMPONENT_CODE = 'component_code'
-const COMPONENT_NAME = 'component_name'
-const WEIGHT = 'weight' // weight on the net value
-const MARKET_CAP = 'market_cap_10000rmb'
-const SHARES = 'shares'
-const VALID_UNTIL = 'valid_until'
-const COMPONENT_TYPE = 'component_type'
-const FUND_CODE = 'fund_code'
-
-
-var options = {
-    method: 'GET',
-    uri: url,
-    gzip: true
-};
-
+// fund |<- bonds
+//      |<- stocks 
 
 function decodeComponentTable(html, fundCode, type){
     var doc = new DOMParser().parseFromString(html, 'text/xml')
@@ -103,54 +94,23 @@ async function fetchBondComponents(fundCode){
     }
 }
 
-fetchBondComponents('519688')
-fetchStockComponents('519688')
+async function fetchFundInfo(){
+    var res = await axios.get('http://fund.eastmoney.com/js/fundcode_search.js')
+    eval(res.data)
+    var data = r
+    symbols = []
+    for (var d of data){
+        entry = {}
+        entry[FUND_CODE] = d[0]
+        entry[SYMBOL_EN] = d[1]
+        entry[SYMBOL_ZH] = d[2]
+        entry[TYPE] = d[3]
+        symbols.push(entry)
+    }
+    dbUtils.batch_write(symbols, [FUND_CODE], MGO_DB, SYMBOL_CLC)
+}
 
-
-// ['000985', '000297', '001178', '001562', '001718', '166002', '460005', '519069', '159905']
-
-// rp(options).then(function (htmlString) {
-//         // return data are stored in variable r
-//         eval(htmlString)
-//         console.log(r[0])
-//         var N = r.length
-
-//         db_client.connect(mgo_adr, function (err, db){
-//             if (err) throw err
-//             var dbo = db.db("fund")
-
-//             dbo.createIndex(
-//                 'symbols', {code: 1, symbol_en: 1}, {unique:true}, function (err, indexName){
-//                     if (err) throw err
-
-//                     console.log(indexName, "created");
-//                     // Initialize the Ordered Batch
-//                     var collection = dbo.collection("symbols");
-//                     var batch = collection.initializeOrderedBulkOp();
-//                     var utc_now = new Date(); // utc by default
-//                     for (var i=0;i<N;i++){
-//                         entry = r[i];
-//                         var obj = { code: entry[0], symbol_en: entry[1], symbol_zh: entry[2], type: entry[3], update_at: utc_now};
-//                         batch.find({code: entry[0]}).upsert().updateOne({$set: obj});
-//                     };
-//                     batch.execute(function(err, result){
-//                         if (err) throw err
-//                         console.log("Finished: ", result);
-//                         db.close();
-//                     });        
-//                 }
-//             )
-//         })
-
-//         fs.writeFile('codes.json', r, (err) => {
-//             // throws an error, you could also catch it here
-//             if (err) throw err;
-//             // success case, the file was saved
-//             console.log('fund codes saved!');
-//         });
-
-
-//     })
-//     .catch(function (err) {
-//         console.error("Failed", err)
-//     });
+// code = '159909'
+// fetchBondComponents(code)
+// fetchStockComponents(code)
+fetchFundInfo()

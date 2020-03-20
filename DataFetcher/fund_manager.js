@@ -2,20 +2,20 @@
 
 const axios = require("axios")
 const dbUtils = require("../fund_utils/db")
+const consts = require("../fund_utils/const")
 
-const MGO_DB = 'fund'
-const MANAGER_CLC = 'managers'
-
-const MANAGER_CODE = 'manager_code'
-const MANAGER_NAME_CH = "manager_name_ch"
-const FIRM_NAME = 'firm_name'
-const FIRM_CODE = 'firm_code'
-const MANAGED_FUNDS = 'managed_funds'
-const BEST_RETURN_FUND_CODE = 'best_return_fund_code'
-const BEST_RETURN_FUND_NAME = 'best_return_fund_name'
-const BEST_RETURN_RATE = 'best_return_rate'
-const BEST_RETURN_DAYS = 'best_return_days'
-const MANAGED_CAPITAL = 'managed_capital'
+const MGO_DB = consts.MGO_DB
+const MANAGER_CLC = consts.MANAGER_CLC
+const MANAGER_CODE = consts.MANAGER_CODE
+const MANAGER_NAME_CH = consts.MANAGER_NAME_CH
+const FIRM_NAME = consts.FIRM_NAME
+const FIRM_CODE = consts.FIRM_CODE
+const MANAGED_FUNDS = consts.MANAGED_FUNDS
+const BEST_RETURN_FUND_CODE = consts.BEST_RETURN_FUND_CODE
+const BEST_RETURN_FUND_NAME = consts.BEST_RETURN_FUND_NAME
+const BEST_RETURN_RATE = consts.BEST_RETURN_RATE
+const BEST_RETURN_DAYS = consts.BEST_RETURN_DAYS
+const MANAGED_CAPITAL = consts.MANAGED_CAPITAL
 
 
 function save(data){
@@ -31,12 +31,7 @@ function save(data){
         temp_entry[MANAGER_NAME_CH] = entry[1]
         temp_entry[FIRM_CODE] = entry[2]
         temp_entry[FIRM_NAME] = entry[3]
-        temp_entry[MANAGED_FUNDS] = {}
-        var fundCodes = entry[4].split(',')
-        var fundNames = entry[5].split(',')
-        for (var i=0; i<fundCodes.length;i++){
-            temp_entry[MANAGED_FUNDS][fundCodes[i]] = fundNames[i]
-        }
+        temp_entry[MANAGED_FUNDS] = entry[4].split(',')
         temp_entry[BEST_RETURN_DAYS] = parseInt(entry[6])
         temp_entry[BEST_RETURN_RATE] = entry[7]
         temp_entry[BEST_RETURN_FUND_CODE] = entry[8]
@@ -50,7 +45,6 @@ function save(data){
     }else{
         throw TypeError("No qualified data")
     }
-    
 }
 
 async function fetchManagers(page, size=100){
