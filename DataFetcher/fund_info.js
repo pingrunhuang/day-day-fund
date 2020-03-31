@@ -6,6 +6,7 @@ const consts = require("../fund_utils/const")
 
 const MGO_DB = consts.MGO_DB
 const SYMBOL_CLC = consts.SYMBOLS_CLC
+const COMPONENT_CLC = consts.COMPONENT_CLC
 const SYMBOL_EN = consts.SYMBOL_EN
 const SYMBOL_ZH = consts.SYMBOL_ZH
 const TYPE = consts.TYPE
@@ -16,7 +17,7 @@ const MARKET_CAP = consts.MARKET_CAP
 const SHARES = consts.SHARES
 const VALID_UNTIL = consts.VALID_UNTIL
 const COMPONENT_TYPE = consts.COMPONENT_TYPE
-const FUND_CODE = CONST_VAR.FUND_CODE
+const FUND_CODE = consts.FUND_CODE
 
 // fund |<- bonds
 //      |<- stocks 
@@ -110,7 +111,7 @@ async function fetchFundInfo(){
     dbUtils.batch_write(symbols, [FUND_CODE], MGO_DB, SYMBOL_CLC)
 }
 
-// code = '159909'
-// fetchBondComponents(code)
-// fetchStockComponents(code)
-fetchFundInfo()
+var code = ''
+fetchBondComponents(code)
+fetchStockComponents(code)
+// fetchFundInfo()

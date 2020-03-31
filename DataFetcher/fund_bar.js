@@ -5,7 +5,9 @@ const DOMParser = require('xmldom').DOMParser
 const consts = require('../fund_utils/const')
 
 const extractCellValue = common.extractCellValue
-const SYMBOL_EN = consts.SYMBOL_EN
+const MGO_DB = consts.MGO_DB
+const SYMBOLS_CLC = consts.SYMBOLS_CLC
+const BAR_CLC = consts.BAR_CLC
 const FUND_CODE = consts.FUND_CODE
 const DATETIME = consts.DATETIME
 const NET_VALUE_UNIT = consts.NET_VALUE_UNIT
@@ -111,4 +113,5 @@ async function fetchAllHistoricalBar(){
     })
 }
 
-fetchHistoricalBar('159909')
+var fund_code = ''
+fetchHistoricalBar(fund_code)
